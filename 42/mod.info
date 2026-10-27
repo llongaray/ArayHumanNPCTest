@@ -1,0 +1,6 @@
+name=Aray Human NPC Test
+id=ArayHumanNPCTest
+author=Aray Solucoes
+description=Experimental human NPC test for Build 42. Use a disposable save.
+version=0.1
+targetVersion=42.0
