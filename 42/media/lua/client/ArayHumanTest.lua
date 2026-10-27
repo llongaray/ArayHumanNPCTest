@@ -1,81 +1,37 @@
 -- Aray Human NPC Test - B42.13.1
--- IsoSurvivor fica com BodyDamage nulo e quebra no update.
--- IsoPlayer é a classe que o jogo inicializa com BodyDamage, moodles e visual humano.
+-- IsoSurvivor nasce com BodyDamage nulo e quebra no update.
+-- IsoPlayer é a classe que o jogo inicializa como humano.
 local attempted = false
 local sweptLegacy = false
+local npc = nil
 
-local function setJavaField(obj, name, value)
-    local ok, err = pcall(function()
-        local cls = obj:getClass()
-        local field = nil
-        while cls do
-            local found, result = pcall(function() return cls:getDeclaredField(name) end)
-            if found and result then
-                field = result
-                break
-            end
-            cls = cls:getSuperclass()
-        end
-        if not field then error("campo ausente: " .. tostring(name)) end
-        pcall(function() field:setAccessible(true) end)
-        if type(value) == "boolean" then
-            field:setBoolean(obj, value)
-        elseif type(value) == "number" then
-            field:setInt(obj, math.floor(value))
-        else
-            field:set(obj, value)
-        end
-    end)
-    if not ok then
-        print("[ARAY] ERROR campo " .. tostring(name) .. ": " .. tostring(err))
+local OFFSETS = {
+    {1, 0}, {-1, 0}, {0, 1}, {0, -1},
+    {1, 1}, {1, -1}, {-1, 1}, {-1, -1},
+    {2, 0}, {0, 2}, {-2, 0}, {0, -2},
+    {3, 0}, {0, 3},
+}
+
+local function restoreLocalPlayer()
+    local me = getSpecificPlayer(0)
+    if not me or me == npc then return end
+    IsoPlayer.setInstance(me)
+    if IsoCamera then
+        IsoCamera.setCameraCharacter(me)
     end
-    return ok
 end
 
-local function readJavaField(obj, name, kind)
-    local ok, value = pcall(function()
-        local cls = obj:getClass()
-        while cls do
-            local found, field = pcall(function() return cls:getDeclaredField(name) end)
-            if found and field then
-                pcall(function() field:setAccessible(true) end)
-                if kind == "boolean" then return field:getBoolean(obj) end
-                if kind == "int" then return field:getInt(obj) end
-                return field:get(obj)
-            end
-            cls = cls:getSuperclass()
+local function findSpawnSquare(cell, player)
+    local px = math.floor(player:getX())
+    local py = math.floor(player:getY())
+    local pz = math.floor(player:getZ())
+    for i = 1, #OFFSETS do
+        local sq = cell:getGridSquare(px + OFFSETS[i][1], py + OFFSETS[i][2], pz)
+        if sq and sq:TreatAsSolidFloor() and sq:isFree(false) then
+            return sq
         end
-        return nil
-    end)
-    if not ok then return nil end
-    return value
-end
-
-local function discard(npc, reason)
-    if npc then
-        pcall(function() npc:removeFromWorld() end)
-        pcall(function() npc:removeFromSquare() end)
     end
-    print("[ARAY] ERROR: " .. tostring(reason))
-end
-
--- remote=true faz o update do IsoPlayer sair antes de roubar a camera e o IsoPlayer.instance.
-local function protectNpc(npc)
-    if not npc or npc == getPlayer() then return false end
-    pcall(function() npc:setNPC(true) end)
-    local remoteSet = setJavaField(npc, "remote", true)
-    local remote = readJavaField(npc, "remote", "boolean")
-    setJavaField(npc, "playerIndex", -1)
-    local index = readJavaField(npc, "playerIndex", "int")
-    if not remoteSet or remote ~= true then
-        discard(npc, "remote nao ficou true (set=" .. tostring(remoteSet) .. ", lido=" .. tostring(remote) .. "). NPC removido.")
-        return false
-    end
-    local md = npc:getModData()
-    md.ARAY_IsNPC = true
-    md.ARAY_Name = "Aray"
-    print("[ARAY] protecao ok remote=" .. tostring(remote) .. " playerIndex=" .. tostring(index))
-    return true
+    return nil
 end
 
 local function removeLegacySurvivors(cell)
@@ -87,105 +43,111 @@ local function removeLegacySurvivors(cell)
     for i = list:size() - 1, 0, -1 do
         local obj = list:get(i)
         if obj and instanceof(obj, "IsoSurvivor") then
-            pcall(function() obj:removeFromWorld() end)
-            pcall(function() obj:removeFromSquare() end)
+            obj:removeFromWorld()
+            obj:removeFromSquare()
             removed = removed + 1
         end
     end
-    local survivors = cell:getSurvivorList()
-    if survivors then
-        for i = survivors:size() - 1, 0, -1 do
-            local obj = survivors:get(i)
-            if obj and instanceof(obj, "IsoSurvivor") then
-                pcall(function() survivors:remove(obj) end)
-                pcall(function() obj:removeFromWorld() end)
-                removed = removed + 1
-            end
-        end
-    end
     if removed > 0 then
-        print("[ARAY] removidos " .. tostring(removed) .. " IsoSurvivor legado (BodyDamage nulo).")
+        print("[ARAY] removidos " .. tostring(removed) .. " IsoSurvivor legado")
     end
 end
 
 local function findExisting(cell)
     local list = cell:getObjectList()
     if not list then return nil end
+    local me = getSpecificPlayer(0)
     for i = 0, list:size() - 1 do
         local obj = list:get(i)
-        if obj and obj ~= getPlayer() and obj.getModData then
-            local ok, md = pcall(function() return obj:getModData() end)
-            if ok and md and md.ARAY_IsNPC then return obj end
+        if obj and obj ~= me and obj.getModData then
+            local md = obj:getModData()
+            if md and md.ARAY_IsNPC then return obj end
         end
     end
     return nil
 end
 
-local function spawnNpc(player, cell)
-    local x = math.floor(player:getX()) + 3
-    local y = math.floor(player:getY())
-    local z = math.floor(player:getZ())
-    local square = cell:getGridSquare(x, y, z)
-    if not square then return false end
-
-    local desc = nil
-    local createdOk, created = pcall(function() return SurvivorFactory.CreateSurvivor() end)
-    if createdOk and created then
-        desc = created
-    else
-        desc = SurvivorDesc.new()
+local function configureNpc(character, square)
+    character:setNPC(true)
+    local md = character:getModData()
+    md.ARAY_IsNPC = true
+    md.ARAY_Name = "Aray"
+    if square then
+        character:setCurrent(square)
+        local movers = square:getMovingObjects()
+        if movers and not movers:contains(character) then
+            movers:add(character)
+        end
     end
+    local damage = character:getBodyDamage()
+    print("[ARAY] NPC em " .. math.floor(character:getX()) .. "," .. math.floor(character:getY())
+        .. " BodyDamage=" .. tostring(damage ~= nil)
+        .. " vida=" .. tostring(damage and damage:getOverallBodyHealth() or "nil")
+        .. " isNPC=" .. tostring(character:isNPC()))
+    restoreLocalPlayer()
+end
+
+local function spawnNpc(player, cell)
+    local square = findSpawnSquare(cell, player)
+    if not square then
+        print("[ARAY] sem tile livre ao lado do jogador")
+        return false
+    end
+
+    local desc = SurvivorFactory.CreateSurvivor()
+    if not desc then desc = SurvivorDesc.new() end
     desc:setForename("Aray")
     desc:setSurname("NPC")
 
-    local npc = IsoPlayer.new(cell, desc, x, y, z)
-    if not npc then
+    local character = IsoPlayer.new(cell, desc, square:getX(), square:getY(), square:getZ())
+    if not character then
         print("[ARAY] ERROR: IsoPlayer.new retornou nil")
         return true
     end
-    if not protectNpc(npc) then return true end
-
-    local damage = npc:getBodyDamage()
-    if not damage then
-        discard(npc, "IsoPlayer sem BodyDamage")
+    if not character:getBodyDamage() then
+        character:removeFromWorld()
+        character:removeFromSquare()
+        print("[ARAY] ERROR: IsoPlayer sem BodyDamage")
         return true
     end
 
-    npc:setCurrent(square)
-    local movers = square:getMovingObjects()
-    if movers and not movers:contains(npc) then
-        movers:add(npc)
-    end
-
-    print("[ARAY] NPC criado em " .. x .. "," .. y .. "," .. z
-        .. " classe=IsoPlayer BodyDamage=true vida=" .. tostring(damage:getOverallBodyHealth())
-        .. " npc=" .. tostring(npc:isNPC()))
+    npc = character
+    configureNpc(character, square)
     return true
 end
 
-local function testSurvivor()
-    if attempted then return end
-    local player = getPlayer()
+local function onPlayerUpdate(character)
+    if npc and character == npc then
+        restoreLocalPlayer()
+    end
+end
+
+local function onTick()
+    local player = getSpecificPlayer(0)
     local cell = getCell()
     if not player or not cell then return end
 
-    removeLegacySurvivors(cell)
-
-    local existing = findExisting(cell)
-    if existing then
-        attempted = true
-        protectNpc(existing)
-        print("[ARAY] NPC existente reaproveitado")
-        return
+    if not attempted then
+        removeLegacySurvivors(cell)
+        local existing = findExisting(cell)
+        if existing then
+            npc = existing
+            attempted = true
+            configureNpc(existing, existing:getCurrentSquare())
+            print("[ARAY] NPC existente reaproveitado")
+        else
+            local ok, doneOrErr = pcall(function() return spawnNpc(player, cell) end)
+            if not ok then
+                attempted = true
+                print("[ARAY] ERROR: " .. tostring(doneOrErr))
+            elseif doneOrErr then
+                attempted = true
+            end
+        end
     end
 
-    if not cell:getGridSquare(math.floor(player:getX()) + 3, math.floor(player:getY()), math.floor(player:getZ())) then
-        return
-    end
-
-    attempted = true
-    local ok, err = pcall(function() spawnNpc(player, cell) end)
-    if not ok then print("[ARAY] ERROR: " .. tostring(err)) end
+    if npc then restoreLocalPlayer() end
 end
 
-Events.OnTick.Add(testSurvivor)
+Events.OnPlayerUpdate.Add(onPlayerUpdate)
+Events.OnTick.Add(onTick)
