@@ -1,0 +1,48 @@
+{
+  "schema_version": 2,
+  "previous_artifacts_preserved": true,
+  "previous_file_count": 10,
+  "files": {
+    "ai\\analyze_neural_v2.py": "a8e1358185b4f36baa9b2b8e9711e426125ca69a8e55a61996b0c39de8249288",
+    "ai\\benchmark_neural_v2.py": "2761390b6b0fd195a6401d2891aed6703307baa61cb17e39b9fb6b7a8b55be8b",
+    "ai\\neural_data_v2.py": "afdbedba377c09b8a0a7e05aa40e6cff93a80fca094d5aed508494b872c67e48",
+    "ai\\neural_inputs_v2.py": "ec6f0e167093e9c343b259b82ea012db5317d79b1fafff019cac7e14d5b46896",
+    "ai\\test_neural_v2.py": "911d90ebdbec0c5d7018dffc72022b50801d3cdcbe40eb519f4d217fe7f98047",
+    "ai\\train_neural_v2.py": "6ce086151ac2bc0daa0f25775e058901a461b5bbae6a29678a38edc032c1dcbb",
+    "FASE3C5B2_MELHORIA_SUPERVISIONADA.md": "0552241b4d76b54ef2cf68381856d1f5c3d568ccf169521cab49582b4722e989",
+    "ai\\neural_supervised_data_v2\\manifest.json": "172dfdb26cb1c260da8abfcffd53054218c03d0b860e31db51a397cbfb07c5e4",
+    "ai\\neural_supervised_data_v2\\test.jsonl": "9187a0d6cc1d19aaba7ded8fc3f2a3085ec4ab2663600422885e222b8b02928d",
+    "ai\\neural_supervised_data_v2\\train.jsonl": "f4bc0d7c3b0ac9bd2b6ab8fe54987f307b390835f686d4e4e4b5ef0bb9c021c3",
+    "ai\\neural_supervised_data_v2\\validation.jsonl": "3d4064c55d5b05b0b23d8d777ae309ab625420e97683c33aaa93bda08350a4ec",
+    "ai\\neural_artifacts\\3c5b2\\benchmark.json": "f15f77b9dcb759db19afe9c4c0b90ad0348ad09e78aa1588fe5ebccb48c36ad8",
+    "ai\\neural_artifacts\\3c5b2\\diagnostics.json": "04bd45fa7539f0fc070569f94df6b3fbd278c1b4f7a85a08a94a867d3d4b275c",
+    "ai\\neural_artifacts\\3c5b2\\protocol-before-training.json": "42836d154610eb83b49147eadaa36a2859498cb45b1cdb8ce8d81cefdad48be8",
+    "ai\\neural_artifacts\\3c5b2\\result.json": "97ec5c8cb42beb2e6484ae49e2f0ced083fc17a7fa9847108bde86a35dc18671",
+    "ai\\neural_artifacts\\3c5b2\\selection-frozen-before-test.json": "d29b7cd81c72f7a3cd8721604863edff5990c9bc8c4307f3bb62afc4b37680ca",
+    "ai\\neural_artifacts\\3c5b2\\test-predictions.json": "b39934315879c86ef5b1cd91c9cc846e56909f107545ee464c3c3ba9bba7d71b",
+    "ai\\neural_artifacts\\3c5b2\\balanced_sequence\\history.json": "4626b53bc7369a3624cfaf01de7c32b9ae3b75fcaa4735f48ea5096eb381c81a",
+    "ai\\neural_artifacts\\3c5b2\\balanced_sequence\\manifest.json": "c4c861f0ec0926d350db7c0b05597e8af9eec940f333311837208838393ae739",
+    "ai\\neural_artifacts\\3c5b2\\balanced_sequence\\validation-predictions.json": "a548afaf2fe15a4b863cf55cd98bd488e17f80ac4dff7cc7121832d20384c574",
+    "ai\\neural_artifacts\\3c5b2\\balanced_sequence\\weights.pt": "e88f09cae70882bf57810b17d91ed3f9b00bac81f267d5124731203e4fb6dd57",
+    "ai\\neural_artifacts\\3c5b2\\baseline\\history.json": "a8e1049c3bdf6df1cc193f24b26c64fa7f6e13105d8052df13aba71dfbeece49",
+    "ai\\neural_artifacts\\3c5b2\\baseline\\manifest.json": "bef310571266d30e4062c1ea03a63913cda28c51b6acbd2f4e24f54522b2e473",
+    "ai\\neural_artifacts\\3c5b2\\baseline\\validation-predictions.json": "028e013fb70be14a9094a106d550e13fdd4ea6b876e33a3c94adef6e6e508822",
+    "ai\\neural_artifacts\\3c5b2\\baseline\\weights.pt": "1b0e9f652d6ce0a42f64e75e6b2b4957c6088435cbb2361ee0d7760719edfe9a",
+    "ai\\neural_experiments_v2\\previous-artifacts.json": "8e5667095c09ede4a086d01b76cd0ecfcbc8e199996335bd7837b5a8a6908faa",
+    "ai\\neural_experiments_v2\\regression.xml": "e7fe3406b090dd63838d690ab852fee6ae97c12d103d84f0a3f692bb0c2eb2ee"
+  },
+  "environment_reference": {
+    "path": "ai/neural_environment/environment.json",
+    "sha256": "4da8847fe2117b71bc6465f4036cb7e21a5931c56120af7b4e2fc62997c01cc4",
+    "requirements_sha256": "5ab885781d5158d1c7b52d7f99635d5a801db25fa8255085eb3b9e8c59620381"
+  },
+  "regression": {
+    "tests": "982",
+    "failures": "0",
+    "errors": "0",
+    "skipped": "0",
+    "time": "43.693"
+  },
+  "test_forward_evaluations": 1,
+  "game_integrated": false
+}

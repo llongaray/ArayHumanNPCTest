@@ -1,0 +1,12 @@
+{
+  "benchmark.json": "1128cb8a684790c5cf10b251cd044f92133c6903ccfed2b3ffd6e0c563f746c7",
+  "data-diagnostics.json": "63fdcaf70b3dafdfdf8ecdd0e3035b3f31be0bf4c27a37f276e9ded25dfa26d3",
+  "manifest.json": "f30b83c5e1ad049e2adc7fcd7f8c2079461ebe911c75addfb245e3cf975cec12",
+  "test-predictions.json": "acbc892b071c863243a06202606d7e966ea224ee630067d968abe41e8ade579f",
+  "test.jsonl": "b33e5484673575f73191ad8d9f2b598af450b3da2640526e81ea8cdaa33c0445",
+  "train.jsonl": "cb6980cb33720a1e28a52050a9e91e35c3977c61aca7cf0b85285888b965a253",
+  "validation-history.json": "b4bb7992014cac790fb053e92eb698532a65ba7e293a5d566de849afd17e0dbf",
+  "validation-predictions.json": "8a7e953029034b61ccc4ff337d89463fae9b521a78acf9784bf19091f6d08ab3",
+  "validation.jsonl": "9dc8365928a4651c286b35ce8a83389ac4213bbdf3daee7af69864b850e37d21",
+  "weights.pt": "fdf321f7a663bce5399463d28dd42f1b94a2137cd194d6f1ff6873d449a3121b"
+}

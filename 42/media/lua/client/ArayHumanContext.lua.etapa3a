@@ -1,0 +1,25 @@
+-- Etapa 3A: uma opcao, sem submenu. O passe de teste nao monta o menu.
+ArayHuman = ArayHuman or {}
+
+local logs = 0
+
+local function onFill(player, context, worldobjects, test)
+    if test == true then
+        if ISWorldObjectContextMenu and ISWorldObjectContextMenu.setTest then
+            ISWorldObjectContextMenu.setTest()
+        end
+        return
+    end
+    if not context or not context.addOption then return end
+    if logs < 3 then
+        print("[ARAY] contexto etapa3a antes de addOption")
+    end
+    context:addOption("Ajudante (teste)", nil, nil)
+    if logs < 3 then
+        logs = logs + 1
+        print("[ARAY] contexto etapa3a depois de addOption")
+    end
+end
+
+Events.OnFillWorldObjectContextMenu.Add(onFill)
+print("[ARAY] contexto etapa3a carregado")

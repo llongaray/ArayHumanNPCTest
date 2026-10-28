@@ -1,0 +1,5 @@
+{
+  "ollama_url": "http://127.0.0.1:11434",
+  "selected_model": null,
+  "update_interval_seconds": 30
+}

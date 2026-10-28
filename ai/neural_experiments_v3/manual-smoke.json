@@ -1,0 +1,10 @@
+{
+  "run_id": "71571e1e34f7435caa04f16a1e16e6ac",
+  "path": "C:\\Users\\llongaray\\Zomboid\\mods\\ArayHumanNPCTest\\ai\\neural_artifacts\\manual-runs\\20261028T215647-5fc2ee7cfb7741fc9380332ae152a2bf",
+  "api_status": 200,
+  "status": "completed",
+  "epochs": 1,
+  "train_loss": 8.967768736559936,
+  "validation_loss": 6.16451395844384,
+  "test_evaluations": 0
+}

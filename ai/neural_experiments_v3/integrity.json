@@ -1,0 +1,40 @@
+{
+  "schema_version": 3,
+  "previous_v1_artifacts_preserved": true,
+  "previous_v2_artifacts_and_corpus_preserved": true,
+  "v1_files_checked": 10,
+  "v2_files_checked": 18,
+  "files": {
+    "ai\\neural_trainer\\cli.py": "9e5eab2a466a9b3d39756402e191622f1ae0dca51cec3f23c6ff7d486fc43782",
+    "ai\\neural_trainer\\lab.py": "b586d3fc791a6dbb4488335bcc8b3d7ad8a2214736ec5311c61dd540052a5794",
+    "ai\\neural_trainer\\store.py": "d7ee526d3429afbd0ebab90706bbd9e95d8b70e95d82d0ed418862f23927c756",
+    "ai\\neural_trainer\\web.py": "2e1bba2211568f83bdce840ef01c899297b3f8426d65cc32ea07258e6313c182",
+    "ai\\neural_trainer\\__init__.py": "8d80bca9c78e7ed5c8afe26df8d1f14c1a916ba2001a43b6da51da0de26543f1",
+    "ai\\neural_trainer\\__main__.py": "79ee6f134c5c5193377cf9b189cbdcc3e2095e49ba9cec310114441c15a917c4",
+    "ai\\neural_trainer\\static\\dashboard.css": "2d7c6581982e0a56471f4266e1c8e377ded0d68e99127588ff0d97ef1e50a19a",
+    "ai\\neural_trainer\\static\\dashboard.js": "ece33d1f8a8245df2f0fa94f0a53ef748ed04c4f4c9615f3c07ed47a2bbf038a",
+    "ai\\neural_trainer\\templates\\dashboard.html": "e413d40597ba831b53f6ac6ad079d11c640b05b0081c3e092555e1c7c70dc8f0",
+    "ai\\train_neural_v2.py": "d93ceea41aff087b2c7778e1c064a1cdd1e1a14c26456332d7ccdab6385a6f06",
+    "ai\\test_neural_dashboard.py": "1ab684612a304993f7a528bf83a34c368e06ed1b84609bcf8bfeae075f234c4b",
+    "FASE3C5B3_TREINADOR_DASHBOARD.md": "6dd2a6fd2bcdedca6fa49b4ec9753298bdcd365caa9231821ccb39ebfe1696db",
+    "ai\\neural_experiments_v3\\dashboard-dependencies.json": "d854edb48459a531a4e81efe3342ead5d1d0432f7e4e657393c693494ecb96a1",
+    "ai\\neural_experiments_v3\\flask-install.json": "63f059ae76b3d10f8d3cad9e73cf7d2f3486c26d00eb741224277b8eda4eb834",
+    "ai\\neural_experiments_v3\\manual-smoke.json": "114bf2a4458a7bc76dca4a1428565a20d7c3ac943ffce771cea97f2242907a6a",
+    "ai\\neural_experiments_v3\\regression.xml": "0f92210c1156930419b1518baafb1f6a837d0e51c0353c9e240ef279e6ae1a44",
+    "ai\\neural_experiments_v3\\requirements-dashboard.txt": "47befa42a5d1cbaa6cef01361428e92221a0b732d4cea09d3c5aa2969e9acc73",
+    "ai\\neural_experiments_v3\\requirements-full.txt": "5d56b6f63513fb3c381f7d78bff4a1ca9e10278b24cf50325b7fb8df43837adb",
+    "ai\\neural_experiments_v3\\licenses\\blinker\\blinker-1.9.0.dist-info\\LICENSE.txt": "9eb73a1f38597a4aa17025d2ae1be3839624c795e985d4f0e9769ce29faca467",
+    "ai\\neural_experiments_v3\\licenses\\Flask\\flask-3.1.3.dist-info\\licenses\\LICENSE.txt": "489a8e1108509ed98a37bb983e11e0f7e1d31f0bd8f99a79c8448e7ff37d07ea",
+    "ai\\neural_experiments_v3\\licenses\\itsdangerous\\itsdangerous-2.2.0.dist-info\\LICENSE.txt": "63af09891b6be8ad1a4252ed43af0f4efba7fc948e228367bed7f3c5ae0b09d7",
+    "ai\\neural_experiments_v3\\licenses\\Werkzeug\\werkzeug-3.1.9.dist-info\\licenses\\LICENSE.txt": "3b49dcee4105eb37bac10faf1be260408fe85d252b8e9df2e0979fc1e094437b"
+  },
+  "server_started": false,
+  "regression": {
+    "tests": "1002",
+    "failures": "0",
+    "errors": "0",
+    "skipped": "0",
+    "time": "47.065"
+  },
+  "consumed_test_evaluations": 0
+}

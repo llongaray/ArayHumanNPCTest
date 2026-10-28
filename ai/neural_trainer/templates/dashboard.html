@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Aray · Laboratório neural</title><link rel="stylesheet" href="/static/dashboard.css"></head>
+<body><header><div><span class="eyebrow">ARAY HUMAN · OFFLINE</span><h1>Laboratório neural</h1><p>Treinamento supervisionado em CPU · dados sintéticos · nenhuma ação no jogo</p></div><span class="badge">Somente neste computador</span></header>
+<main><nav><a href="#training">Treinamento</a><a href="#models">Checkpoints</a><a href="#laboratory">Laboratório Neural</a><span id="connection">Conectando…</span></nav>
+<section id="training"><div class="section-title"><h2>Acompanhar treinamento</h2><select id="run"><option value="">Nenhuma execução manual</option></select></div>
+<p class="hint">Inicie pelo PowerShell. Fechar esta página não interrompe o treinamento. Atualização a cada 2 segundos.</p>
+<div id="overview" class="cards"><article><small>Status</small><strong>Aguardando</strong><p>Nenhum treino iniciado pelo painel.</p></article></div>
+<div class="progress"><div id="progress"></div></div><div id="charts" class="charts"></div>
+<details><summary>Logs e detalhes da execução</summary><pre id="errors">Sem erros registrados.</pre><pre id="state"></pre></details></section>
+<section id="models"><div class="section-title"><h2>Checkpoints e comparação</h2><button id="refresh">Atualizar</button></div><p class="hint">Métricas de validação. Aprovação exige os gates e um teste inédito; nenhum checkpoint é promovido automaticamente.</p>
+<div class="table-wrap"><table><thead><tr><th>Execução</th><th>Melhor época</th><th>Decisões</th><th>Intenções</th><th>Planos</th><th>Compostos</th><th>Inválidas</th><th>Cobertura</th><th>Estado</th></tr></thead><tbody id="checkpoint-table"></tbody></table></div></section>
+<section id="laboratory"><h2>Laboratório Neural</h2><p class="hint">Inferência real de um checkpoint experimental, em um cenário sintético versionado. Não representa uma partida. Não chama Ollama ou Executor.</p>
+<div class="form-grid"><label>Checkpoint<select id="checkpoint"></select></label><label>Cenário<select id="scenario"></select></label></div>
+<label>Mensagem com destinatário explícito<textarea id="message" rows="3" maxlength="1800">Carlos, pegue a bandagem e depois me siga.</textarea></label>
+<button id="predict">Consultar a rede</button><span id="lab-status" role="status"></span>
+<div class="flow" aria-label="Fluxo de inferência"><span>Mensagem</span><b>→</b><span>MiniLM local</span><b>→</b><span>Embedding · 384</span><b>→</b><span>Política PyTorch</span><b>→</b><span>Intenções e objetivos</span><b>→</b><span>Guardas</span></div>
+<p class="hint">As barras abaixo mostram componentes reais do embedding. Não são uma animação de neurônios nem uma medida de aprendizado.</p><div id="embedding" class="embedding"></div>
+<div id="lab-results"></div></section></main><footer>Treino e inferência independentes de Codex, Ollama e Project Zomboid. RL desativado.</footer>
+<script>window.NEURAL_TOKEN={{ token|tojson }};</script><script src="/static/dashboard.js"></script></body></html>

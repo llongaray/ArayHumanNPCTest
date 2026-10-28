@@ -1,0 +1,13 @@
+-- Etapa 2: o evento do menu existe e roda. Nao altera o menu.
+ArayHuman = ArayHuman or {}
+
+local calls = 0
+
+local function onFill(player, context, worldobjects, test)
+    if calls >= 3 then return end
+    calls = calls + 1
+    print("[ARAY] contexto etapa2 onFill executado")
+end
+
+Events.OnFillWorldObjectContextMenu.Add(onFill)
+print("[ARAY] contexto etapa2 carregado")

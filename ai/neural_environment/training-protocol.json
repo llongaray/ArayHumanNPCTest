@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "phase": "3C.5B.1",
+  "recorded_before_training": true,
+  "seed": 1729,
+  "epochs": 100,
+  "batch_size": 32,
+  "learning_rate": 0.002,
+  "weight_decay": 0.01,
+  "gradient_clip": 1,
+  "threads": 2,
+  "checkpoint_selection": "validation.decision_accuracy + validation.intent_exact + validation.ordered_goal_exact; strict greater; every 5 epochs and final",
+  "test_evaluations_planned": 1,
+  "data": {
+    "counts": {
+      "train": 243,
+      "validation": 162,
+      "test": 162
+    },
+    "phrase_families": 168,
+    "dataset_sha256": "ae68cfa3de01197649f584f47ac7ead465b6fc4cd98a1a7d25d0295a4dd24cf8"
+  },
+  "source_before_instrumentation": {
+    "neural_model.py": "549af5a8faa16967159d192a558d8931780cbf51a51f5a32d5e1faf7bf74a096",
+    "neural_data.py": "898cf1ffcc08fd6a3e1b6e3156f0085a600b597e123749ea05f564f0fc524121",
+    "neural_contract.py": "2a3531af63863c2a6d893bf33273db9e6c68b797ec2be053d171f821a9f07e1e",
+    "neural_runtime.py": "127f670c1a45e9df19cf1b84a3c3a3c8a83a0245c9c4bf1ded58c8c63e5a4b1c",
+    "train_neural.py": "21f0c9ecac8062e962a25467ba8db20c63a1a8725a66de45f2e1f78dbfbcb81d",
+    "neural_encoder.py": "9ed670cf54468e129b6f47d406f15488afa136ef04ab305d605e1ae0ab777e5d"
+  },
+  "gates": {
+    "count_min": 20,
+    "intent_exact_min": 0.8,
+    "decision_accuracy_min": 0.85,
+    "ordered_goal_exact_min": 0.8,
+    "multi_goal_count_min": 4,
+    "multi_goal_exact_min": 0.8,
+    "invalid_action_rate_max": 0,
+    "confidence_coverage_min": 0.5
+  }
+}

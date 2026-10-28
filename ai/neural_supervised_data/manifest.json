@@ -1,0 +1,13 @@
+{
+  "counts": {
+    "train": 243,
+    "validation": 162,
+    "test": 162
+  },
+  "phrase_families": 168,
+  "dataset_sha256": "ae68cfa3de01197649f584f47ac7ead465b6fc4cd98a1a7d25d0295a4dd24cf8",
+  "trained": false,
+  "validated": false,
+  "metrics": null,
+  "provenance": "authored_supervised_not_game_experience"
+}

@@ -1,0 +1,238 @@
+-- Clique direito no corpo do NPC. O picker FBO nao entrega IsoPlayer.
+require "ISUI/ISContextMenu"
+
+ArayHuman = ArayHuman or {}
+
+local HIT_X = 36
+local HIT_ABOVE = 90
+local screenLimit = false
+
+local function screenOf(playerNum, character)
+    return isoToScreenX(playerNum, character:getX(), character:getY(), character:getZ()),
+        isoToScreenY(playerNum, character:getX(), character:getY(), character:getZ())
+end
+
+local function bodyHit(playerNum, character, mx, my)
+    local sx, sy = screenOf(playerNum, character)
+    local dx = math.abs(mx - sx)
+    local above = sy - my
+    return dx <= HIT_X and above >= 0 and above <= HIT_ABOVE
+end
+
+local function bodyScore(playerNum, character, mx, my)
+    local sx, sy = screenOf(playerNum, character)
+    local dx = mx - sx
+    local dy = my - (sy - HIT_ABOVE * 0.5)
+    return dx * dx + dy * dy
+end
+
+local function clickedSquare(worldobjects)
+    if not worldobjects then return nil end
+    for i = 1, #worldobjects do
+        local obj = worldobjects[i]
+        if obj and obj.getSquare then
+            local square = obj:getSquare()
+            if square then return square end
+        end
+    end
+    return nil
+end
+
+local function listedNpc(worldobjects, npc)
+    if not worldobjects or not npc then return false end
+    for i = 1, #worldobjects do
+        local obj = worldobjects[i]
+        if obj == npc then return true end
+        if obj and obj.getModData then
+            local data = obj:getModData()
+            if data and data.ARAY_IsNPC then return true end
+        end
+    end
+    return false
+end
+
+local function consider(seen, character)
+    if not character or seen[character] then return end
+    if not instanceof(character, "IsoGameCharacter") then return end
+    seen[character] = true
+end
+
+local function nearbyCharacters(square)
+    local seen = {}
+    if not square or not getCell then return seen end
+    local cell = getCell()
+    if not cell then return seen end
+    local x = square:getX()
+    local y = square:getY()
+    local z = square:getZ()
+    for dx = -2, 2 do
+        for dy = -2, 2 do
+            local near = cell:getGridSquare(x + dx, y + dy, z)
+            if near and near.getMovingObjects then
+                local moving = near:getMovingObjects()
+                for i = 0, moving:size() - 1 do
+                    consider(seen, moving:get(i))
+                end
+            end
+        end
+    end
+    return seen
+end
+
+local function pointerOnNpc(playerNum, npc, worldobjects)
+    if not npc or npc:isDead() then return false end
+    local player = getSpecificPlayer(playerNum)
+    if player and math.floor(player:getZ()) ~= math.floor(npc:getZ()) then return false end
+    if npc.isOnScreen and not npc:isOnScreen() then return false end
+    if listedNpc(worldobjects, npc) then return true end
+    if not isoToScreenX or not isoToScreenY then
+        if not screenLimit then
+            screenLimit = true
+            print("[ARAY] limite: conversao mundo-tela indisponivel")
+        end
+        return false
+    end
+
+    local mx = getMouseX()
+    local my = getMouseY()
+    if not bodyHit(playerNum, npc, mx, my) then return false end
+
+    local npcScore = bodyScore(playerNum, npc, mx, my)
+    local seen = nearbyCharacters(clickedSquare(worldobjects))
+    consider(seen, player)
+    for character, _ in pairs(seen) do
+        if character ~= npc and not character:isDead() and bodyHit(playerNum, character, mx, my) then
+            if bodyScore(playerNum, character, mx, my) < npcScore then
+                return false
+            end
+        end
+    end
+    return true
+end
+
+local function infoLine(menu, text)
+    local option = menu:addOption(text, nil, nil)
+    option.notAvailable = true
+    return option
+end
+
+local function fillMenu(playerNum, context)
+    local npc = ArayHuman.getNpc and ArayHuman.getNpc()
+    local player = getSpecificPlayer(playerNum)
+    if not npc or not player then return end
+
+    local root = context:addOption("Ajudante", nil, nil)
+    local menu = ISContextMenu:getNew(context)
+    context:addSubMenu(root, menu)
+
+    menu:addOption("Seguir-me", nil, function()
+        ArayHuman.order({ name = "FOLLOW_PLAYER" })
+    end)
+    menu:addOption("Ficar aqui", nil, function()
+        ArayHuman.order({ name = "STAY" })
+    end)
+    menu:addOption("Ir até...", nil, function()
+        if ArayHuman.beginGoTo then ArayHuman.beginGoTo() end
+    end)
+    menu:addOption("Olhar para mim", nil, function()
+        ArayHuman.order({ name = "FACE_TARGET" })
+    end)
+
+    local data = npc.getModData and npc:getModData()
+    local name = data and data.ARAY_Name or "Ajudante"
+    local dx = npc:getX() - player:getX()
+    local dy = npc:getY() - player:getY()
+    local dist = math.sqrt(dx * dx + dy * dy)
+    infoLine(menu, "Nome: " .. tostring(name))
+    infoLine(menu, "Estado: " .. (ArayHuman.getOrderLabel and ArayHuman.getOrderLabel() or "Parado"))
+    infoLine(menu, "Distancia: " .. string.format("%.1f", dist))
+end
+
+local function onFill(player, context, worldobjects, test)
+    if not context or not context.addOption then return end
+    local playerNum = player
+    if type(player) ~= "number" then playerNum = 0 end
+    if not ArayHuman.getNpc then return end
+    local npc = ArayHuman.getNpc()
+    if not npc or not pointerOnNpc(playerNum, npc, worldobjects) then return end
+    fillMenu(playerNum, context)
+end
+
+local GoCursor = nil
+local cursorLimit = false
+
+local function ensureGoCursor()
+    if GoCursor then return GoCursor end
+    if not ISBuildingObject or not ISBuildingObject.derive then
+        if not cursorLimit then
+            cursorLimit = true
+            print("[ARAY] limite: ISBuildingObject indisponivel")
+        end
+        return nil
+    end
+    local class = ISBuildingObject:derive("ArayGoCursor")
+
+    function class:new()
+        local o = {}
+        setmetatable(o, self)
+        self.__index = self
+        o:init()
+        o.character = getSpecificPlayer(0)
+        o.player = 0
+        o.skipBuildAction = true
+        o.skipWalk2 = true
+        o.noNeedHammer = true
+        return o
+    end
+
+    function class:isValid(square)
+        local npc = ArayHuman.getNpc and ArayHuman.getNpc()
+        if not square or not npc or npc:isDead() then return false end
+        if not square:TreatAsSolidFloor() then return false end
+        if ArayHuman.squareFree then
+            return ArayHuman.squareFree(square, npc) == true
+        end
+        return false
+    end
+
+    function class:render(x, y, z, square)
+        if not square or not self.getFloorCursorSprite then return end
+        local color = getCore():getBadHighlitedColor()
+        if self:isValid(square) then
+            color = getCore():getGoodHighlitedColor()
+        end
+        self:getFloorCursorSprite():RenderGhostTileColor(
+            square:getX(), square:getY(), square:getZ(),
+            color:getR(), color:getG(), color:getB(), 0.8)
+    end
+
+    function class:create(x, y, z, north, sprite)
+        local cell = getCell()
+        if cell then cell:setDrag(nil, 0) end
+        local square = cell and cell:getGridSquare(x, y, z)
+        if not square or not self:isValid(square) then
+            print("[ARAY] ir ate recusado")
+            return
+        end
+        if ArayHuman.order then
+            ArayHuman.order({
+                name = "MOVE_TO",
+                x = square:getX(),
+                y = square:getY(),
+                z = square:getZ(),
+            })
+        end
+    end
+
+    GoCursor = class
+    return GoCursor
+end
+
+function ArayHuman.beginGoTo()
+    local class = ensureGoCursor()
+    local cell = getCell()
+    if not class or not cell or not cell.setDrag then return end
+    cell:setDrag(class:new(), 0)
+end
+
+Events.OnFillWorldObjectContextMenu.Add(onFill)

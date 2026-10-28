@@ -1,0 +1,22 @@
+-- Etapa 3: submenu demonstrativo. Nenhuma opcao executa comando.
+ArayHuman = ArayHuman or {}
+
+local logs = 0
+
+local function onFill(player, context, worldobjects, test)
+    if not context or not context.addOption or not context.addSubMenu then return end
+    local root = context:addOption("Ajudante (teste)")
+    local menu = ISContextMenu:getNew(context)
+    context:addSubMenu(root, menu)
+    menu:addOption("Seguir-me")
+    menu:addOption("Ficar aqui")
+    menu:addOption("Ir até...")
+    menu:addOption("Olhar para mim")
+    if logs < 3 then
+        logs = logs + 1
+        print("[ARAY] contexto etapa3 submenu criado")
+    end
+end
+
+Events.OnFillWorldObjectContextMenu.Add(onFill)
+print("[ARAY] contexto etapa3 carregado")

@@ -1,0 +1,43 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+*.egg-info/
+
+# Arquivos gerados pelo serviço
+ai/service.pid
+ai/service.log
+ai/*.log
+
+# Configurações locais de usuário
+ai/config_local.json
+
+# Backups
+*.bak
+*.backup
+*~
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Testes temporários
+test_output/
+*.tmp
+
+# ML isolated environment, pretrained weights and generated checkpoints
+.venv-neural/
+ai/neural_models/
+ai/neural_artifacts/
+ai/neural_environment/.hub-cache/
